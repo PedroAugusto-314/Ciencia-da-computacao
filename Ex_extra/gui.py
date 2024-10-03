@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import conversoes
+import conversoes as c
 
 class Conversor():
 
@@ -84,44 +84,46 @@ class Conversor_Frame(Conversor):
         print(self._get_conversor1(),self._get_conversor2(),self._get_numero())
 
     def _choice_function(self):
-        base_inicial = self._get_conversor1()
-
-        if base_inicial == "Decimal": funcao_conversao = conversoes.convert_dec
-        else: funcao_conversao = conversoes.convert_to_dec
-
-        return funcao_conversao    
-
+        b_i = self._get_conversor1()
+        b_f = self._get_conversor2()
+        if b_i == b_f: return None
+        if b_i == "Decimal": return c.convert_dec
+        if b_f == "Decimal": return c.convert_to_dec 
+        if (b_i == "Octal" or b_i == "Hexadecimal") and (b_f == "Hexadecimal" or b_f == "Octal"): return c.convert_hex_oct
+        if b_i == "Binário" and (b_f == "Hexadecimal" or b_f == "Octal"): return c.convert_bin
+        if b_f == "Binário" and (b_i == "Hexadecimal" or b_i == "Octal"): return c.convert_to_bin
+           
     def _choice_base(self) -> int:
         base_inicial = self._get_conversor1()
         base_final = self._get_conversor2()
-        funcao_conversao = self._choice_function()
-        if funcao_conversao == conversoes.convert_dec:
-            match base_final:
-                case "Octal":
-                    base = 8
-                case "Binário":
-                    base = 2
-                case "Hexadecimal":
-                    base = 16
-        else:
-            match base_inicial:
-                case "Octal":
-                    base = 8
-                case "Binário":
-                    base = 2
-                case "Hexadecimal":
-                    base = 16
-        return base
+        
+        match base_inicial:
+            case "Octal":base_i = 8
+            case "Binário":base_i = 2
+            case "Hexadecimal":base_i = 16
+            case "Decimal":base_i = 10
+
+        match base_final:
+            case "Octal":base_f = 8
+            case "Binário":base_f = 2
+            case "Hexadecimal":base_f = 16
+            case "Decimal":base_f = 10
+
+        return (base_i,base_f)
     
     def execute_function(self,event=None) -> None:
         funcao_converter = self._choice_function()
-        base = self._choice_base()
-        
-        numero = int(self._get_numero()) if funcao_converter == conversoes.convert_dec else self._get_numero()
-
-        numero_convertido = funcao_converter(numero,base)
-    
-        self.numero_convertido_label.configure(text=numero_convertido)
+        base_i = self._choice_base()[0]
+        base_f = self._choice_base()[1]
+        numero = self._get_numero()
+        match funcao_converter:
+            case c.convert_dec: num_conv = funcao_converter(numero,base_f)
+            case c.convert_to_dec: num_conv = funcao_converter(numero,base_i)
+            case c.convert_to_bin: num_conv = funcao_converter(numero,base_i)
+            case c.convert_bin: num_conv = funcao_converter(numero,base_f)
+            case c.convert_hex_oct: num_conv = funcao_converter(numero,base_i,base_f)
+            case None: num_conv = numero
+        self.numero_convertido_label.configure(text=num_conv)
         self.numero_convertido_label.place(x=250, y=220)
         self.resultado_conversao_label.place(x=190, y=190)
 
