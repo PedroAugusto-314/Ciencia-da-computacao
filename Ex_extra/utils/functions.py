@@ -18,3 +18,16 @@ def verificar_numero(numero: str, base : int) -> str | None:
         if base == 10 and n not in '0123456789': return "Número Decimal inválido"
     return None
 
+def preencher(num_1: str, num_2: str) -> str:
+    if len(num_1) > len(num_2): num_2 = num_2.zfill(len(num_1))
+    else: num_1 = num_1.zfill(len(num_2))
+
+    return num_1,num_2
+
+
+def preencher_valores_da_lista(lista_strings: list) -> None:
+    lista_ordenada = lista_strings.copy()
+    lista_ordenada.sort()
+    maior = len(lista_ordenada[-1])
+    lista_preenchida = [elemento.zfill(maior) for elemento in lista_strings]
+    return lista_preenchida

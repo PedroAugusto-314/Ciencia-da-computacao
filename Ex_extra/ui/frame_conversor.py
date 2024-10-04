@@ -1,39 +1,8 @@
 import customtkinter as ctk
-import conversoes as c
+from conversor import conversoes
+from ui.app import App
 
-class Conversor():
-
-    def __init__(self) -> None:
-        
-        self.root = ctk.CTk()
-        self.root.geometry('700x400')
-
-        self.main_label = ctk.CTkLabel(master=self.root, text="Atividades extras de Introdução à Programação Estruturada", 
-                                       font=('Comic Sans MS', 16))
-        self.main_label.place(x=140, y=10)
-
-        self.main_frame = ctk.CTkFrame(master=self.root, width=650, height=350)
-        self.main_frame.place(x=25, y=35)
-
-        self.choice_frame = ctk.CTkFrame(master=self.main_frame, height=320, width=100)
-        self.choice_frame.place(x=15,y=15)
-
-        self.conversor_btn = ctk.CTkButton(master=self.choice_frame, text='Conversor', width=80,command=self.conversor_btn_func)
-        self.conversor_btn.place(x=10,y=10)
-
-        self.conversor_frame = Conversor_Frame(master=self.main_frame)
-
-        self.calculadora_btn = ctk.CTkButton(master=self.choice_frame, text='Calculadora', width=80)
-        self.calculadora_btn.place(x=10,y=50)
-
-        self.root.mainloop()
-
-    def conversor_btn_func(self, event = None) -> None:
-        if not self.conversor_frame.placed: self.conversor_frame.show()
-        else: self.conversor_frame.hide()
-
-
-class Conversor_Frame(Conversor):
+class Conversor_Frame(App):
     
     def __init__(self, master) -> None:
         options = ("Binário", "Decimal", "Octal", "Hexadecimal")
@@ -87,11 +56,11 @@ class Conversor_Frame(Conversor):
         b_i = self._get_conversor1()
         b_f = self._get_conversor2()
         if b_i == b_f: return None
-        if b_i == "Decimal": return c.convert_dec
-        if b_f == "Decimal": return c.convert_to_dec 
-        if (b_i == "Octal" or b_i == "Hexadecimal") and (b_f == "Hexadecimal" or b_f == "Octal"): return c.convert_hex_oct
-        if b_i == "Binário" and (b_f == "Hexadecimal" or b_f == "Octal"): return c.convert_bin
-        if b_f == "Binário" and (b_i == "Hexadecimal" or b_i == "Octal"): return c.convert_to_bin
+        if b_i == "Decimal": return conversoes.convert_dec
+        if b_f == "Decimal": return conversoes.convert_to_dec 
+        if (b_i == "Octal" or b_i == "Hexadecimal") and (b_f == "Hexadecimal" or b_f == "Octal"): return conversoes.convert_hex_oct
+        if b_i == "Binário" and (b_f == "Hexadecimal" or b_f == "Octal"): return conversoes.convert_bin
+        if b_f == "Binário" and (b_i == "Hexadecimal" or b_i == "Octal"): return conversoes.convert_to_bin
            
     def _choice_base(self) -> int:
         base_inicial = self._get_conversor1()
@@ -117,14 +86,12 @@ class Conversor_Frame(Conversor):
         base_f = self._choice_base()[1]
         numero = self._get_numero()
         match funcao_converter:
-            case c.convert_dec: num_conv = funcao_converter(numero,base_f)
-            case c.convert_to_dec: num_conv = funcao_converter(numero,base_i)
-            case c.convert_to_bin: num_conv = funcao_converter(numero,base_i)
-            case c.convert_bin: num_conv = funcao_converter(numero,base_f)
-            case c.convert_hex_oct: num_conv = funcao_converter(numero,base_i,base_f)
+            case conversoes.convert_dec: num_conv = funcao_converter(numero,base_f)
+            case conversoes.convert_to_dec: num_conv = funcao_converter(numero,base_i)
+            case conversoes.convert_to_bin: num_conv = funcao_converter(numero,base_i)
+            case conversoes.convert_bin: num_conv = funcao_converter(numero,base_f)
+            case conversoes.convert_hex_oct: num_conv = funcao_converter(numero,base_i,base_f)
             case None: num_conv = numero
         self.numero_convertido_label.configure(text=num_conv)
         self.numero_convertido_label.place(x=250, y=220)
         self.resultado_conversao_label.place(x=190, y=190)
-
-Conversor()

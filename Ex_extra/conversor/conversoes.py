@@ -1,4 +1,4 @@
-import functions as f
+from utils import functions as f
 
 DICT_HEX = {
     'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, 
